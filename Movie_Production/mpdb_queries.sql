@@ -1,5 +1,3 @@
-
-
 #Query A: All roles performed by an individual named "Pat Indria" (each role should be displayed only once!)
 SELECT DISTINCT Role 
 FROM CREDIT, PROFESSIONAL 
