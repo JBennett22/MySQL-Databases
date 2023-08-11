@@ -1,8 +1,8 @@
-#3: View that pairs all agents with raised alarms
+# View that pairs all agents with raised alarms
 CREATE VIEW MATCHEDALARMS AS SELECT AID, ACode
 FROM AGENT LEFT JOIN ALARM ON AID = RBAID;
 
-#4: DELIMITER &&
+DELIMITER &&
 CREATE TRIGGER auto_error
 BEFORE INSERT ON ALARM
 FOR EACH ROW
@@ -13,6 +13,6 @@ BEGIN
           AND (Type = 'A'))>0
           THEN SIGNAL SQLSTATE '45000' 
               SET MESSAGE_TEXT="Automated system raised alarm in location other than its own.";
-     END IF;
+	 END IF;
   END&&
 DELIMITER ;
