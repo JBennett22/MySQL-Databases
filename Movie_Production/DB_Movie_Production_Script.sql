@@ -1,0 +1,79 @@
+DROP DATABASE IF EXISTS MOVIE_PRODUCTION;
+CREATE DATABASE MOVIE_PRODUCTION;
+USE MOVIE_PRODUCTION;	#Default DB
+
+CREATE TABLE PROFESSIONAL
+	(SAGID CHAR(10) NOT NULL,
+    Name VARCHAR(50) NOT NULL,
+    Address VARCHAR(50),
+    Email VARCHAR(50) NOT NULL,
+    PRIMARY KEY (SAGID));
+    
+CREATE TABLE MOVIE
+	(ProdID VARCHAR(10) NOT NULL,
+    Title VARCHAR(50) NOT NULL,
+    ReleaseDate DATE,
+    PrimaryDirectorID CHAR(10) NOT NULL,
+    PRIMARY KEY (ProdID),
+    FOREIGN KEY (PrimaryDirectorID) REFERENCES PROFESSIONAL(SAGID));
+
+CREATE TABLE CREDIT
+	(SAGID CHAR(10) NOT NULL,
+    ProdID VARCHAR(10) NOT NULL,
+    Role VARCHAR(50) NOT NULL,
+    Compensation INT NOT NULL,
+    PRIMARY KEY (SAGID, ProdID, Role),
+    FOREIGN KEY (SAGID) REFERENCES PROFESSIONAL(SAGID),
+    FOREIGN KEY (ProdID) REFERENCES MOVIE(ProdID));
+    
+CREATE TABLE NOLIST
+	(NLID CHAR(10) NOT NULL,
+    RefuseID CHAR(10) NOT NULL,
+    PRIMARY KEY (NLID, REFUSEID),
+    FOREIGN KEY (NLID) REFERENCES PROFESSIONAL(SAGID),
+    FOREIGN KEY (RefuseID) REFERENCES PROFESSIONAL(SAGID));
+
+INSERT INTO PROFESSIONAL
+	VALUES
+('AAAAA11111', 'Pat Indria','231 Tamarin Ln...','ji@corecast.com'),
+('AAAAA12345', 'Ada Belvyn','231 Tamarin Ln...','ab@corecast.com'),
+('BBBBB13579','Adria Chang','560 Felmynd Dr...','achang@gemail.com'),
+('CCCCC22222','Campbell Atlax',NULL,'campbellatlax@gemail.com'),
+('DDDDD33333','Melvin Thomas',NULL,'melsamp@gemail.com');
+
+INSERT INTO MOVIE
+	VALUES
+('1', 'The Sea Outside','AAAAA12345','2019-04-22'),
+('2', 'Tremors Within','AAAAA12345','2020-06-22'),
+('3', 'Sources Beneath','AAAAA12345',NULL),
+('4', 'Martian War','DDDDD33333','2019-09-24'),
+('5', 'Planet Attack','DDDDD33333',NULL);
+
+INSERT INTO CREDIT
+	VALUES
+('AAAAA11111', '1','Actor',100000),
+('AAAAA11111', '2','Actor',200000),
+('AAAAA11111', '3','Actor',500000),
+('AAAAA11111', '4','Actor',100000),
+('AAAAA11111', '4','Director',0),
+('AAAAA12345', '1','Director', 100000),
+('AAAAA12345', '2','Director', 200000),
+('AAAAA12345', '3','Director', 500000),
+('BBBBB13579', '2','Actor', 200000),
+('BBBBB13579', '4','Actor', 100000),
+('CCCCC22222', '1','StageHand', 50000),
+('CCCCC22222', '2','StageHand', 50000),
+('CCCCC22222', '3','StageHand', 50000),
+('CCCCC22222', '4','StageHand', 50000),
+('CCCCC22222', '5','StageHand', 50000),
+('DDDDD33333', '4','Actor', 50000),
+('DDDDD33333', '4','Director', 50000),
+('DDDDD33333', '5','Actor', 50000),
+('DDDDD33333', '5','Director', 50000);
+
+INSERT INTO NOLIST
+	VALUES
+('AAAAA11111', 'BBBBB13579'),
+('AAAAA11111', 'DDDDD33333'),
+('AAAAA12345', 'BBBBB13579'),
+('AAAAA12345', 'DDDDD33333');
