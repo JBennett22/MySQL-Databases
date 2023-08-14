@@ -1,0 +1,81 @@
+SELECT Fname, Lname
+	FROM EMPLOYEE
+	WHERE Super_ssn IS NULL;
+
+SELECT DISTINCT Pnumber
+	FROM PROJECT
+	WHERE Pnumber IN
+			(SELECT	Pnumber
+			FROM PROJECT, DEPARTMENT, EMPLOYEE
+			WHERE Dnum=Dnumber AND Mgr_ssn=Ssn
+			AND Lname='Wong');
+
+SELECT DISTINCT Pnumber
+	FROM PROJECT
+	WHERE Pnumber IN
+			(SELECT	Pno
+			FROM WORKS_ON, EMPLOYEE
+			WHERE Essn=Ssn AND Lname='Wong');
+
+SELECT DISTINCT Pnumber
+	FROM PROJECT
+	WHERE Pnumber IN
+			(SELECT	Pnumber
+			FROM PROJECT, DEPARTMENT, EMPLOYEE
+			WHERE Dnum=Dnumber AND Mgr_ssn=Ssn
+			AND Lname='Wong')
+	  OR  
+          Pnumber IN
+			(SELECT	Pno
+			FROM WORKS_ON, EMPLOYEE
+			WHERE Essn=Ssn AND Lname='Wong');
+            
+SELECT Pno, Hours
+	FROM WORKS_ON
+	WHERE Essn='999887777';
+    
+SELECT DISTINCT Essn
+	FROM WORKS_ON
+	WHERE (Pno, Hours) 	IN
+				(SELECT Pno, Hours
+				FROM WORKS_ON
+				WHERE Essn='999887777');
+
+SELECT Lname, Fname
+	FROM EMPLOYEE
+	WHERE Salary> ALL	(SELECT Salary
+				FROM	EMPLOYEE
+				WHERE	Dno=5);
+
+SELECT E.Fname, E.Lname
+	FROM EMPLOYEE AS E
+	WHERE E.Ssn 	IN	
+			(SELECT Essn
+			FROM DEPENDENT AS D
+			WHERE E.Sex=D.Sex);
+
+SELECT	E.Fname, E.Lname
+	FROM	EMPLOYEE AS E, DEPENDENT AS D
+	WHERE	E.Ssn=D.Essn AND E.Sex=D.Sex;
+
+SELECT	Fname, Lname
+	FROM	EMPLOYEE
+	WHERE	EXISTS	(SELECT *
+			FROM DEPENDENT
+			WHERE Ssn=Essn);
+
+SELECT	Fname, Lname
+	FROM	EMPLOYEE
+	WHERE	EXISTS (SELECT *
+			FROM DEPARTMENT
+			WHERE Ssn=Mgr_ssn);
+
+SELECT	Fname, Lname
+	FROM	EMPLOYEE
+	WHERE	EXISTS	(SELECT *
+			FROM DEPENDENT
+			WHERE Ssn=Essn)
+	AND
+			EXISTS (SELECT *
+			FROM DEPARTMENT
+			WHERE Ssn=Mgr_ssn);

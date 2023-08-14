@@ -1,0 +1,118 @@
+SELECT *
+	FROM WORKS_ON B
+	WHERE (B.Pno IN (SELECT Pnumber
+				FROM PROJECT
+				WHERE Dnum =4));
+
+SELECT 	Lname, Fname
+	FROM 	EMPLOYEE
+	WHERE 	EXISTS	(SELECT *
+				FROM WORKS_ON B
+				WHERE (B.Pno IN (SELECT Pnumber
+						FROM PROJECT
+						WHERE Dnum =4)
+				AND
+				NOT EXISTS 	(SELECT *
+						FROM WORKS_ON C
+						WHERE C.Essn=Ssn
+						AND C.Pno=B.Pno)));
+
+SELECT 	Lname, Fname
+	FROM 	EMPLOYEE
+	WHERE 	NOT EXISTS	(SELECT *
+				FROM WORKS_ON B
+				WHERE (B.Pno IN (SELECT Pnumber
+						FROM PROJECT
+						WHERE Dnum =4)
+				AND
+				NOT EXISTS 	(SELECT *
+						FROM WORKS_ON C
+						WHERE C.Essn=Ssn
+						AND C.Pno=B.Pno)));
+
+SELECT	 DISTINCT Essn
+	FROM	WORKS_ON
+	WHERE	Pno IN (1,2,3);
+
+SELECT	E.Lname AS Employee_Name, S.Lname AS Supervisor_name
+	FROM	EMPLOYEE AS E, EMPLOYEE AS S
+	WHERE	E.Super_ssn=S.Ssn;
+    
+SELECT SUM(Salary), MAX(Salary), MIN(Salary), AVG(Salary)
+	FROM 	EMPLOYEE;
+
+SELECT 	SUM(Salary) AS Total_Sal, MAX(Salary) AS Highest_Sal,
+		MIN(Salary) AS Lowest_Sal, AVG(Salary) AS Average_Sal
+	FROM EMPLOYEE;
+
+SELECT	COUNT(*)
+	FROM EMPLOYEE;
+
+SELECT	COUNT(*) AS RES_EMP_COUNT
+	FROM	EMPLOYEE, DEPARTMENT
+	WHERE	Dno=Dnumber AND DName='Research';
+
+SELECT		Fname, Lname, Address
+	FROM		(EMPLOYEE JOIN DEPARTMENT ON Dno=Dnumber)
+	WHERE		Dname='Research';
+	
+SELECT		Fname, Lname, Address
+	FROM		EMPLOYEE, DEPARTMENT
+	WHERE		(Dno=Dnumber) AND (Dname='Research');
+
+SELECT * 
+FROM EMPLOYEE JOIN DEPENDENT ON Ssn=Essn;
+
+SELECT E.FName as EmpFN, E.LName as EMPLN,
+	S.FName as SuperFN, S.LName as SuperLN FROM EMPLOYEE E 	JOIN EMPLOYEE S ON E.Super_Ssn=S.Ssn;
+
+(SELECT E.FName as EmpFN, E.LName as EMPLN,
+	S.FName as SuperFN, S.LName as SuperLN FROM EMPLOYEE E 	LEFT JOIN EMPLOYEE S ON E.Super_Ssn=S.Ssn)
+	UNION
+	(SELECT E.FName as EmpFN, E.LName as EMPLN,
+	S.FName as SuperFN, S.LName as SuperLN FROM EMPLOYEE E 	RIGHT JOIN EMPLOYEE S ON E.Super_Ssn=S.Ssn);
+
+SELECT 	Dno, COUNT(*), AVG(Salary)
+	FROM EMPLOYEE
+	GROUP BY Dno;
+
+SELECT 	Dname, COUNT(*), AVG(Salary)
+	FROM EMPLOYEE JOIN DEPARTMENT ON Dno=Dnumber
+	GROUP BY Dname
+	ORDER BY AVG(Salary);
+
+SELECT 	Pnumber, Pname, COUNT(*) as EmpNum
+	FROM PROJECT, WORKS_ON
+	WHERE Pnumber=Pno
+	GROUP BY Pnumber, Pname
+	HAVING COUNT(*) > 2;
+
+SELECT 	Dno, COUNT(*) 
+	FROM EMPLOYEE
+	WHERE Salary>40000
+	GROUP BY Dno
+	HAVING COUNT(*) >= 4;
+
+SELECT 	Dno, COUNT(*)
+	FROM DEPARTMENT JOIN EMPLOYEE ON Dno=Dnumber
+	WHERE SALARY>30000 AND Dnumber IN
+		(SELECT Dno
+		FROM EMPLOYEE
+		GROUP BY Dno
+		HAVING COUNT(*) >= 4);
+
+WITH BIGDEPTS (Dno) AS
+ 	(SELECT Dno	
+	FROM EMPLOYEE	
+	GROUP BY Dno
+	HAVING COUNT(*) >= 4)
+	SELECT AVG(Salary)
+	FROM BIGDEPTS NATURAL JOIN EMPLOYEE;
+
+SELECT	FName, LName, CASE
+ 	WHEN Dno=5 THEN Salary*0.2
+	WHEN Dno=4 THEN Salary*0.1
+    	ELSE Salary*0
+	END AS 'Projected Raise'
+FROM EMPLOYEE;
+	
